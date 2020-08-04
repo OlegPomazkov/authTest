@@ -109,14 +109,12 @@
       }
     },
 
-    async created(){
+    async mounted(){
       await this.$store.dispatch('checkToken')
       if(this.isAuthorized){
         this.$router.push({name: 'Userinfo'})
       }
-    },
-
-    mounted(){
+    
       // TODO: Убрать этот костыль для обхода визуального бага при 
       //       автозаполнении пароля в Chrome в Vuetify
       this.$nextTick(function(){
@@ -126,7 +124,7 @@
     },
 
     methods: {
-      handleLoginClicked() {
+      async handleLoginClicked() {
         this.$v.$touch()
         if( this.nameErrors.length || this.passwordErrors.length) {
           this.formAlert = true
@@ -134,7 +132,7 @@
 
           return
         }
-        this.$router.push({name: 'Userinfo'})
+        await this.$store.dispatch('checkToken', `${this.name}-${this.password}`)
       }
     }
   }

@@ -1,7 +1,11 @@
 <template>
   <v-app>
     <userinfo-header/>
-    <userinfo-content/>
+    
+    <userinfo-content
+      :user="userData"
+    />
+    
     <userinfo-footer/>
   </v-app>
 </template>
@@ -22,11 +26,12 @@
 
     computed: {
       ...mapGetters([
-        'isAuthorized'
+        'isAuthorized',
+        'userData'
       ])
     },
 
-    async created(){
+    async mounted(){
       await this.$store.dispatch('checkToken')
       if(!this.isAuthorized){
         this.$router.push({name: 'index'})

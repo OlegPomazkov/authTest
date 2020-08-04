@@ -10,11 +10,11 @@
             <div>
               <v-card-title
                 class="headline"
-                v-text="'Here is name'"
+                v-text="user.name"
               />
 
               <v-card-subtitle 
-                v-text="'Here is email'"
+                v-text="user.email"
               />
             </div>
 
@@ -23,7 +23,7 @@
               size="125"
               tile
             >
-              <v-img :src="imgSrc"/>
+              <v-img :src="user.image"/>
             </v-avatar> 
           </div>
         </v-card>
@@ -33,9 +33,10 @@
 
 <script>
   export default {
-    data() {
-      return {
-        imgSrc: "logo.png"
+    props: {
+      user:{
+        type: Object,
+        required: true
       }
     }
   }

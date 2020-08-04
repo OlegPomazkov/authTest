@@ -5,7 +5,7 @@ import mockApi from '@/utils/mockApi'
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = () => (new Vuex.Store({
   state: {
     authToken: '',
     userData: null
@@ -32,8 +32,8 @@ export default new Vuex.Store({
   },
 
   actions: {
-    async checkToken({ commit, dispatch }){
-      let token = window.localStorage.getItem('auth_token')
+    async checkToken({ commit, dispatch }, newToken){
+      let token = newToken? newToken: window.localStorage.getItem('auth_token')
 
       try{
         if( token ){
@@ -61,4 +61,6 @@ export default new Vuex.Store({
       }
     }
   }
-})
+}))
+
+export default store
