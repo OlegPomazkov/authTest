@@ -64,6 +64,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   import { validationMixin } from 'vuelidate'
   import { required, maxLength } from 'vuelidate/lib/validators'
 
@@ -85,6 +87,9 @@
     },
 
     computed: {
+      ...mapGetters([
+        'isAuthorized'
+      ]),
       nameErrors() {
         const errors = []
 
@@ -104,9 +109,20 @@
       }
     },
 
+    async created(){
+      await this.$store.dispatch('checkToken')
+      if(this.isAuthorized){
+        this.$router.push({name: 'Userinfo'})
+      }
+    },
+
     mounted(){
-      if(this.name) this.name = ''
-      if(this.password) this.password = ''
+      // TODO: Убрать этот костыль для обхода визуального бага при 
+      //       автозаполнении пароля в Chrome в Vuetify
+      this.$nextTick(function(){
+        if(this.name) this.name = ''
+        if(this.password) this.password = ''
+      })
     },
 
     methods: {
@@ -118,7 +134,7 @@
 
           return
         }
-        this.$router.push('/UserInfo')
+        this.$router.push({name: 'Userinfo'})
       }
     }
   }

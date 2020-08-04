@@ -7,6 +7,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   import UserinfoHeader from '@/components/UserinfoHeader'
   import UserinfoContent from '@/components/UserinfoContent'
   import UserinfoFooter from '@/components/UserinfoFooter'
@@ -16,7 +18,20 @@
       UserinfoHeader,
       UserinfoContent,
       UserinfoFooter
-    }
+    },
+
+    computed: {
+      ...mapGetters([
+        'isAuthorized'
+      ])
+    },
+
+    async created(){
+      await this.$store.dispatch('checkToken')
+      if(!this.isAuthorized){
+        this.$router.push({name: 'index'})
+      }
+    },
   }
 </script>
 
