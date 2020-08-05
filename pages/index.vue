@@ -7,7 +7,11 @@
         class="pl-2 pr-2 pt-2 pb-2 mt-10 elevation-3"
         :width="500"
       >
-        <form>
+        <div v-if="isLoading">
+          LOADING ...
+        </div>
+
+        <form v-else>
           <h3>Authorization</h3> 
           
           <v-text-field
@@ -33,6 +37,7 @@
           <v-checkbox
             v-model="savePassword"
             label="Save password"
+            @change='handleGuestModeChanged'
           />
 
           <v-btn 
@@ -56,7 +61,7 @@
         dark
         dismissible
       >
-        Please, fill form in a right way
+        {{ alertMessage }}
       </v-alert>
     </v-container>
   </v-app>
@@ -82,7 +87,9 @@
         name: '',
         password: '',
         savePassword: false,
-        formAlert: false
+        formAlert: false,
+        alertMessage: '',
+        isLoading: false
       }
     },
 
@@ -110,13 +117,15 @@
     },
 
     async mounted(){
+      this.isLoading = true
+
       await this.$store.dispatch('checkToken')
-      if(this.isAuthorized){
+      if(this.isAuthorized){        
         this.$router.push({name: 'Userinfo'})
       }
-    
-      // TODO: Убрать этот костыль для обхода визуального бага при 
-      //       автозаполнении пароля в Chrome в Vuetify
+      this.isLoading = false
+      // TODO: Убрать этот костыль для обхода визуального бага при автозаполнении  
+      //       пароля в Chrome в Vuetify, тем более, что плохо работает
       this.$nextTick(function(){
         if(this.name) this.name = ''
         if(this.password) this.password = ''
@@ -124,16 +133,30 @@
     },
 
     methods: {
+      handleGuestModeChanged() {
+        this.$store.dispatch('changeGuestMode', !this.savePassword)
+      },
       async handleLoginClicked() {
         this.$v.$touch()
         if( this.nameErrors.length || this.passwordErrors.length) {
-          this.formAlert = true
-          setTimeout(()=>{if(this.formAlert) this.formAlert = false}, 3000)
+          this.showAlert('Please, fill form in a right way')
 
           return
         }
         await this.$store.dispatch('checkToken', `${this.name}-${this.password}`)
-      }
+        if( this.isAuthorized ) {
+          this.$router.push({name: 'Userinfo'})
+        } else {
+          this.showAlert('Wrong login or password, please try again.')
+
+          return
+        }
+      },
+      showAlert(message){
+        this.formAlert = true
+        this.alertMessage = message
+        setTimeout(()=>{if(this.formAlert) this.formAlert = false}, 3000)        
+      } 
     }
   }
 </script>

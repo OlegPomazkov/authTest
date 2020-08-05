@@ -13,32 +13,27 @@ const MOCK_USERS = [
     id: 1,
     name: 'User_1',
     email: 'pw1@domen.vvv',
-    avatar: 'pic1.jpg'
+    avatar: 'pic1.webp'
   },
   {
     id: 2,
     name: 'User_2',
     email: 'pw2@domen.vvv',
-    avatar: 'pic2.jpg'
+    avatar: 'pic2.webp'
   }
 ]
 
 export default function({method, token}) {
-  let user = null
+  let data = null
 
-  switch(method){
-    case 'checkAuth':
-      let indAuth = MOCK_AUTH_INFO.findIndex( i => i.token === token)
-      let indUser = (indAuth !== -1)? MOCK_USERS.findIndex( i => i.id === MOCK_AUTH_INFO[indAuth].id): -1
+  if( method === 'checkAuth') {
+    let indAuth = MOCK_AUTH_INFO.findIndex( i => i.token === token)
+    let indUser = (indAuth !== -1)? MOCK_USERS.findIndex( i => i.id === MOCK_AUTH_INFO[indAuth].id): -1
 
-      user = indUser !== -1? MOCK_USERS[indUser]: null
-      break
-    default:
-      console.error('Unknown API method')
-      break
+    data = indUser !== -1? MOCK_USERS[indUser]: null
   }
 
   return new Promise((res, rej) => {
-    res(user)
+    res(data)
   })
 }

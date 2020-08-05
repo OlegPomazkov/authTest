@@ -10,12 +10,10 @@
             <div>
               <v-card-title
                 class="headline"
-                v-text="user.name"
+                v-text="user? user.name: ''"
               />
 
-              <v-card-subtitle 
-                v-text="user.email"
-              />
+              <v-card-subtitle v-text="user? user.email: ''"/>
             </div>
 
             <v-avatar
@@ -23,7 +21,7 @@
               size="125"
               tile
             >
-              <v-img :src="user.image"/>
+              <v-img :src="user? user.avatar: ''"/>
             </v-avatar> 
           </div>
         </v-card>
@@ -35,7 +33,6 @@
   export default {
     props: {
       user:{
-        type: Object,
         required: true
       }
     }

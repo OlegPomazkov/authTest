@@ -1,6 +1,8 @@
 <template>
   <v-app>
-    <userinfo-header/>
+    <userinfo-header
+      @close-personal-data="handleClose"
+    />
     
     <userinfo-content
       :user="userData"
@@ -31,12 +33,18 @@
       ])
     },
 
-    async mounted(){
-      await this.$store.dispatch('checkToken')
-      if(!this.isAuthorized){
+    mounted(){
+      if(!this.userData && !this.isAuthorized){
         this.$router.push({name: 'index'})
       }
     },
+
+    methods: {
+      handleClose() {
+        window.localStorage.removeItem('auth_token')
+        this.$router.push({name: 'index'})
+      }
+    }
   }
 </script>
 
