@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-container>
     <userinfo-header
       @close-personal-data="handleClose"
     />
@@ -9,7 +9,7 @@
     />
     
     <userinfo-footer/>
-  </v-app>
+  </v-container>
 </template>
 
 <script>

@@ -54,9 +54,9 @@ const store = () => (new Vuex.Store({
             commit('UPDATE_USER_DATA', user)
             if( !state.guestMode ) {
               window.localStorage.setItem('auth_token', token)
-            } else {
+            } /* else {
               window.localStorage.removeItem('auth_token')
-            }
+            }*/
           } else {
             commit('UPDATE_AUTH_TOKEN', '')
             commit('UPDATE_USER_DATA', user)

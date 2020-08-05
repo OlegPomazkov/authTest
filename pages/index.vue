@@ -1,71 +1,64 @@
 <template>
-  <v-app>
-    <v-container
-      class="d-flex flex-column justify-space-around align-center"
+  <v-container
+    class="d-flex flex-column justify-space-around align-center"
+  >
+    <v-card
+      class="pl-2 pr-2 pt-2 pb-2 mt-10 elevation-3"
+      :width="500"
     >
-      <v-card
-        class="pl-2 pr-2 pt-2 pb-2 mt-10 elevation-3"
-        :width="500"
-      >
-        <div v-if="isLoading">
-          LOADING ...
-        </div>
+      <form>
+        <h3>Authorization</h3> 
+        
+        <v-text-field
+          v-model="name"
+          :error-messages="nameErrors"
+          :counter="10"
+          label="Name"
+          required
+          @input="$v.name.$touch()"
+          @blur="$v.name.$touch()"
+        />
 
-        <form v-else>
-          <h3>Authorization</h3> 
-          
-          <v-text-field
-            v-model="name"
-            :error-messages="nameErrors"
-            :counter="10"
-            label="Name"
-            required
-            @input="$v.name.$touch()"
-            @blur="$v.name.$touch()"
-          />
+        <v-text-field
+          v-model="password"
+          type="password"
+          :error-messages="passwordErrors"
+          label="Password"
+          required
+          @input="$v.password.$touch()"
+          @blur="$v.password.$touch()"
+        />
+        
+        <v-checkbox
+          v-model="savePassword"
+          label="Save password"
+          @change='handleGuestModeChanged'
+        />
 
-          <v-text-field
-            v-model="password"
-            type="password"
-            :error-messages="passwordErrors"
-            label="Password"
-            required
-            @input="$v.password.$touch()"
-            @blur="$v.password.$touch()"
-          />
-          
-          <v-checkbox
-            v-model="savePassword"
-            label="Save password"
-            @change='handleGuestModeChanged'
-          />
+        <v-btn 
+          @click="handleLoginClicked"
+        >
+          SIGN IN
+        </v-btn>
+      </form>
+    </v-card>
 
-          <v-btn 
-            @click="handleLoginClicked"
-          >
-            SIGN IN
-          </v-btn>
-        </form>
-      </v-card>
+    <div class="mt-10">
+      <p>Two users are available for testing:</p>
+      <p>1. name: User_1 / password: pw1</p>
+      <p>2. name: User_2 / password: pw2</p>
+    </div>
 
-      <div class="mt-10">
-        <p>Two users are available for testing:</p>
-        <p>1. name: User_1 / password: pw1</p>
-        <p>2. name: User_2 / password: pw2</p>
-      </div>
-
-      <v-alert
-        v-model="formAlert"
-        close-text="close"
-        color="orange accent-4"
-        dark
-        dismissible
-      >
-        {{ alertMessage }}
-      </v-alert>
-    </v-container>
-  </v-app>
-
+    <v-alert
+      v-model="formAlert"
+      close-text="close"
+      color="orange accent-4"
+      dark
+      dismissible
+    >
+      {{ alertMessage }}
+    </v-alert>
+  </v-container>
 </template>
 
 <script>
@@ -89,7 +82,6 @@
         savePassword: false,
         formAlert: false,
         alertMessage: '',
-        isLoading: false
       }
     },
 
@@ -117,13 +109,11 @@
     },
 
     async mounted(){
-      this.isLoading = true
-
       await this.$store.dispatch('checkToken')
       if(this.isAuthorized){        
         this.$router.push({name: 'Userinfo'})
       }
-      this.isLoading = false
+
       // TODO: Убрать этот костыль для обхода визуального бага при автозаполнении  
       //       пароля в Chrome в Vuetify, тем более, что плохо работает
       this.$nextTick(function(){
